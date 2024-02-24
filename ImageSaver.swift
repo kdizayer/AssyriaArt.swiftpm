@@ -2,7 +2,26 @@
 //  ImageSaver.swift
 //  AssyriaArt
 //
-//  Created by Kayla Dizayer on 2/24/24.
-//
+//  Created by Kayla Dizayer on 2/17/24.
+// Cite: HackingWithSwift
 
 import Foundation
+import UIKit
+
+
+class ImageSaver: NSObject {
+    var successHandler: (() -> Void)?
+    var errorHandler: ((Error) -> Void)?
+
+    func writeToPhotoAlbum(image: UIImage) {
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompleted), nil)
+    }
+
+    @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            errorHandler?(error)
+        } else {
+            successHandler?()
+        }
+    }
+}
